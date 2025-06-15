@@ -101,34 +101,34 @@ const Index = () => {
   };
 
   const renderDashboard = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-neutral-50 p-4 max-w-3xl mx-auto">
       {/* Header with Favor Coins */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex items-center justify-between mb-6"
+        className="flex items-center justify-between mb-8"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">SEE</h1>
+          <h1 className="text-2xl font-semibold text-gray-800">SEE</h1>
           <p className="text-sm text-gray-600">Social Empathy Engine</p>
         </div>
         <motion.div 
-          className="flex items-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full shadow-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-full"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
         >
           <Zap className="w-4 h-4 mr-2" />
-          <span className="font-bold">{favorCoins.toLocaleString()}</span>
-          <span className="text-xs ml-1">FC</span>
+          <span className="font-medium">{favorCoins.toLocaleString()}</span>
+          <span className="text-xs ml-1 opacity-80">FC</span>
         </motion.div>
       </motion.div>
 
       {/* Social Entropy Graph - At the top */}
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.98, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="mb-6"
+        transition={{ delay: 0.1 }}
+        className="mb-8"
       >
         <NetworkGraph 
           embedded={true}
@@ -141,40 +141,40 @@ const Index = () => {
 
       {/* Input Section */}
       <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="bg-white rounded-3xl p-6 shadow-xl mb-6"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8"
       >
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Record Social Interactions</h3>
+        <h3 className="text-lg font-medium text-gray-800 mb-5">Record Social Interactions</h3>
         
         {/* Voice Recording Interface */}
         {(isRecording || isProcessing || transcription || showConfirmation) ? (
-          <div className="text-center">
+          <div>
             {/* Processing Status */}
             {isProcessing ? (
-              <div className="mb-4">
+              <div className="mb-6 flex flex-col items-center">
                 <motion.div
-                  className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"
+                  className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full mb-3"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />
-                <p className="text-sm text-gray-600">AI analyzing interaction...</p>
+                <p className="text-sm text-gray-600">Analyzing interaction...</p>
               </div>
             ) : showConfirmation ? (
               // AI Analysis Confirmation
-              <div className="space-y-4">
-                <div className="text-left">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-gray-800">AI Analysis Result:</h4>
+              <div className="space-y-5">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-800">Analysis Results</h4>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setIsEditing(!isEditing)}
-                      className="text-blue-600"
+                      className="text-blue-600 text-sm"
                     >
-                      <Edit2 className="w-4 h-4 mr-1" />
-                      {isEditing ? 'Cancel Edit' : 'Edit'}
+                      <Edit2 className="w-3.5 h-3.5 mr-1" />
+                      {isEditing ? 'Done' : 'Edit'}
                     </Button>
                   </div>
                   
@@ -182,82 +182,84 @@ const Index = () => {
                     <Textarea
                       value={editedAnalysis}
                       onChange={(e) => setEditedAnalysis(e.target.value)}
-                      className="w-full min-h-[120px] p-3 border rounded-lg"
-                      placeholder="Edit the AI analysis..."
+                      className="w-full min-h-[120px] text-sm p-3 border rounded-lg"
+                      placeholder="Edit the analysis..."
                     />
                   ) : (
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <pre className="text-sm text-gray-800 whitespace-pre-wrap font-sans">
+                    <div className="p-4 bg-gray-50 rounded-xl">
+                      <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans">
                         {aiAnalysis}
                       </pre>
                     </div>
                   )}
                 </div>
                 
-                <div className="flex justify-center space-x-3">
+                <div className="flex justify-end space-x-3">
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={handleRejectAnalysis}
-                    className="text-red-600 border-red-300 hover:bg-red-50"
+                    className="text-sm"
                   >
-                    <X className="w-4 h-4 mr-1" />
-                    Reject
+                    Cancel
                   </Button>
                   <Button 
                     onClick={handleConfirmAnalysis}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="bg-blue-500 hover:bg-blue-600 text-sm"
+                    size="sm"
                   >
-                    <Check className="w-4 h-4 mr-1" />
-                    Confirm & Save
+                    Save
                   </Button>
                 </div>
               </div>
             ) : (
               // Recording Interface
               <>
-                <motion.button
-                  onClick={isRecording ? handleStopRecording : handleStartRecording}
-                  className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg mb-4 mx-auto ${
-                    isRecording 
-                      ? 'bg-gradient-to-br from-red-500 to-red-600' 
-                      : 'bg-gradient-to-br from-blue-500 to-blue-600'
-                  }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {isRecording ? (
-                    <MicOff className="w-6 h-6 text-white" />
-                  ) : (
-                    <Mic className="w-6 h-6 text-white" />
-                  )}
-                  
-                  {/* Audio Level Animation */}
-                  {isRecording && (
-                    <motion.div
-                      className="absolute inset-0 rounded-full border-2 border-white"
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.3, 0.6, 0.3]
-                      }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    />
-                  )}
-                </motion.button>
+                <div className="flex justify-center mb-5">
+                  <motion.button
+                    onClick={isRecording ? handleStopRecording : handleStartRecording}
+                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-sm ${
+                      isRecording 
+                        ? 'bg-red-500' 
+                        : 'bg-blue-500'
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {isRecording ? (
+                      <MicOff className="w-6 h-6 text-white" />
+                    ) : (
+                      <Mic className="w-6 h-6 text-white" />
+                    )}
+                    
+                    {/* Audio Level Animation */}
+                    {isRecording && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-white"
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.3, 0.6, 0.3]
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+                    )}
+                  </motion.button>
+                </div>
 
                 {/* Real-time Transcription */}
                 {transcription && !isProcessing && (
-                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <p className="text-gray-800 text-sm">{transcription}</p>
+                  <div className="mb-5 p-4 bg-gray-50 rounded-xl">
+                    <p className="text-gray-700 text-sm">{transcription}</p>
                   </div>
                 )}
 
                 {/* Control Buttons */}
                 {transcription && !isRecording && !isProcessing && (
-                  <div className="flex justify-center space-x-3">
+                  <div className="flex justify-end space-x-3">
                     <Button
                       variant="outline"
                       size="sm"
@@ -265,21 +267,22 @@ const Index = () => {
                         setTranscription('');
                         setIsRecording(false);
                       }}
+                      className="text-sm"
                     >
                       Try Again
                     </Button>
                     <Button 
                       size="sm" 
                       onClick={handleStopRecording} 
-                      className="bg-blue-600 hover:bg-blue-700"
+                      className="bg-blue-500 hover:bg-blue-600 text-sm"
                     >
-                      Process with AI
+                      Analyze
                     </Button>
                   </div>
                 )}
 
                 {isRecording && (
-                  <p className="text-sm text-gray-600">Recording... Tap to stop</p>
+                  <p className="text-xs text-center text-gray-500 mt-3">Tap microphone to stop recording</p>
                 )}
               </>
             )}
@@ -287,23 +290,23 @@ const Index = () => {
         ) : (
           <div>
             {/* Voice Input Button */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-5">
               <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleStartRecording}
-                className="flex flex-col items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full text-white shadow-lg"
+                className="flex flex-col items-center justify-center w-16 h-16 bg-blue-500 rounded-full text-white shadow-sm"
               >
-                <Mic className="w-8 h-8" />
+                <Mic className="w-6 h-6" />
               </motion.button>
             </div>
             
             {/* Text Input */}
-            <div className="text-center">
+            <div>
               <input 
                 type="text" 
-                placeholder="Quick note about an interaction..."
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Type a note about an interaction..."
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     const target = e.target as HTMLInputElement;
@@ -312,7 +315,7 @@ const Index = () => {
                   }
                 }}
               />
-              <p className="text-xs text-gray-500 mt-2">Press Enter to submit or use voice input above</p>
+              <p className="text-xs text-gray-500 mt-2 text-center">Press Enter to submit</p>
             </div>
           </div>
         )}
@@ -320,23 +323,23 @@ const Index = () => {
 
       {/* Low Entropy Alerts */}
       <motion.div
-        initial={{ x: 20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.4 }}
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
       >
-        <Card className="mb-6 border-0 shadow-lg">
+        <Card className="border border-gray-100 shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center">
-              <TrendingUp className="w-5 h-5 mr-2 text-orange-500" />
-              Low Entropy Alerts
+            <CardTitle className="text-base font-medium flex items-center text-gray-800">
+              <TrendingUp className="w-4 h-4 mr-2 text-blue-500" />
+              Connection Reminders
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2.5">
             {lowEntropyAlerts.map((alert, index) => (
               <motion.div
                 key={index}
-                whileHover={{ scale: 1.02 }}
-                className="flex items-center justify-between p-3 bg-orange-50 rounded-lg cursor-pointer"
+                whileHover={{ scale: 1.01, backgroundColor: "rgba(243, 244, 246, 1)" }}
+                className="flex items-center justify-between p-3 bg-white rounded-lg cursor-pointer border border-gray-100"
                 onClick={() => {
                   setSelectedContact({
                     id: alert.id,
@@ -348,10 +351,10 @@ const Index = () => {
                 }}
               >
                 <div>
-                  <p className="font-medium text-gray-800">{alert.name}</p>
-                  <p className="text-xs text-gray-600">{alert.suggestion}</p>
+                  <p className="font-medium text-sm text-gray-800">{alert.name}</p>
+                  <p className="text-xs text-gray-600 mt-0.5">{alert.suggestion}</p>
                 </div>
-                <Badge variant="outline" className="text-orange-600">
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                   {alert.days}d
                 </Badge>
               </motion.div>

@@ -86,36 +86,35 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-neutral-50 p-4 max-w-3xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <Button variant="ghost" onClick={onBack} className="p-2">
-          <ArrowLeft className="w-6 h-6" />
+      <div className="flex items-center mb-6">
+        <Button variant="ghost" onClick={onBack} className="p-1 mr-2">
+          <ArrowLeft className="w-5 h-5 text-gray-600" />
         </Button>
-        <h1 className="text-xl font-semibold text-gray-800">Contact Profile</h1>
-        <div className="w-10"></div>
+        <h1 className="text-xl font-medium text-gray-800">Contact Profile</h1>
       </div>
 
       {/* Contact Header */}
       <motion.div
-        initial={{ y: -20, opacity: 0 }}
+        initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white rounded-xl shadow-lg p-6 mb-6"
+        className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6"
       >
-        <div className="flex items-center space-x-4 mb-4">
-          <Avatar className="w-16 h-16">
-            <AvatarFallback className="text-xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+        <div className="flex items-center space-x-4 mb-5">
+          <Avatar className="w-16 h-16 border-2 border-gray-100">
+            <AvatarFallback className="text-xl font-semibold bg-blue-500 text-white">
               {contact.name.split(' ').map((n: string) => n[0]).join('')}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-800">{contact.name}</h2>
-            <p className="text-gray-600 capitalize">{contact.type}</p>
+            <h2 className="text-xl font-semibold text-gray-800">{contact.name}</h2>
+            <p className="text-gray-600 text-sm capitalize">{contact.type}</p>
             <div className="flex items-center mt-2">
               <span className="text-sm text-gray-500 mr-2">Favor Balance:</span>
               <Badge 
                 variant={contact.coins > 0 ? "default" : "destructive"}
-                className={contact.coins > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}
+                className={contact.coins > 0 ? "bg-green-100 text-green-800 font-medium" : "bg-red-100 text-red-800 font-medium"}
               >
                 {contact.coins > 0 ? '+' : ''}{contact.coins} FC
               </Badge>
@@ -124,30 +123,30 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
         </div>
 
         {/* Contact Information Management */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+        <div className="space-y-4">
           <div>
-            <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone</Label>
-            <div className="flex items-center space-x-2">
-              <Phone className="w-4 h-4 text-gray-400" />
+            <Label htmlFor="phone" className="text-sm text-gray-700 mb-1.5 block">Phone</Label>
+            <div className="flex items-center">
+              <Phone className="w-4 h-4 text-gray-400 mr-2" />
               <Input
                 id="phone"
                 value={contactInfo.phone}
                 onChange={(e) => setContactInfo(prev => ({ ...prev, phone: e.target.value }))}
                 placeholder="Add phone number"
-                className="flex-1"
+                className="flex-1 bg-gray-50 border-gray-200"
               />
             </div>
           </div>
           <div>
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email</Label>
-            <div className="flex items-center space-x-2">
-              <Mail className="w-4 h-4 text-gray-400" />
+            <Label htmlFor="email" className="text-sm text-gray-700 mb-1.5 block">Email</Label>
+            <div className="flex items-center">
+              <Mail className="w-4 h-4 text-gray-400 mr-2" />
               <Input
                 id="email"
                 value={contactInfo.email}
                 onChange={(e) => setContactInfo(prev => ({ ...prev, email: e.target.value }))}
                 placeholder="Add email address"
-                className="flex-1"
+                className="flex-1 bg-gray-50 border-gray-200"
               />
             </div>
           </div>
@@ -156,20 +155,20 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
 
       {/* AI Suggestions */}
       <motion.div
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1 }}
       >
-        <Card className="mb-6 border-0 shadow-lg bg-gradient-to-r from-purple-100 to-pink-100">
+        <Card className="mb-6 border border-gray-100 shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg text-purple-800">AI Recommendations</CardTitle>
+            <CardTitle className="text-base font-medium text-gray-800">Recommended Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {suggestions.map((suggestion, index) => (
-                <div key={index} className="flex items-start space-x-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-purple-700">{suggestion}</p>
+                <div key={index} className="flex items-start space-x-2.5">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-700">{suggestion}</p>
                 </div>
               ))}
             </div>
@@ -179,79 +178,77 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
 
       {/* Interaction History */}
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
+        initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.2 }}
       >
-        <Card className="border-0 shadow-lg">
+        <Card className="border border-gray-100 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center">
-              <Calendar className="w-5 h-5 mr-2 text-blue-600" />
+            <CardTitle className="text-base font-medium flex items-center text-gray-800">
+              <Calendar className="w-4 h-4 mr-2 text-blue-500" />
               Interaction History
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {interactions.map((interaction, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 * index }}
-                  className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                  onClick={() => setSelectedInteraction(selectedInteraction?.id === interaction.id ? null : interaction as Interaction)}
-                >
-                  <div className="flex items-start justify-between w-full">
-                    <div className="flex items-start space-x-3 flex-1 min-w-0">
-                      <div className="flex-shrink-0 mt-0.5">
-                        {getInteractionIcon(interaction.type)}
+          <CardContent className="space-y-3">
+            {interactions.map((interaction, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0.8 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.05 * index }}
+                className="bg-white rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors border border-gray-100"
+                onClick={() => setSelectedInteraction(selectedInteraction?.id === interaction.id ? null : interaction as Interaction)}
+              >
+                <div className="flex items-start justify-between w-full">
+                  <div className="flex items-start space-x-3 flex-1 min-w-0">
+                    <div className="flex-shrink-0 mt-0.5">
+                      {getInteractionIcon(interaction.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-1">
+                        <h4 className="font-medium text-gray-800 text-sm leading-tight pr-2">{interaction.description}</h4>
+                        <Badge 
+                          variant={interaction.coins > 0 ? "default" : "destructive"}
+                          className={`text-xs flex-shrink-0 ${interaction.coins > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                        >
+                          {interaction.coins > 0 ? '+' : ''}{interaction.coins} FC
+                        </Badge>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="font-medium text-gray-800 text-sm leading-tight pr-2">{interaction.description}</h4>
-                          <Badge 
-                            variant={interaction.coins > 0 ? "default" : "destructive"}
-                            className={`text-xs flex-shrink-0 ${interaction.coins > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
-                          >
-                            {interaction.coins > 0 ? '+' : ''}{interaction.coins} FC
-                          </Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs px-2 py-1 bg-white rounded-full text-gray-600 border">
-                            {getTypeLabel(interaction.type)}
-                          </span>
-                          <span className="text-xs text-gray-500">{interaction.date}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs px-2 py-0.5 bg-gray-50 rounded-full text-gray-600 border border-gray-200">
+                          {getTypeLabel(interaction.type)}
+                        </span>
+                        <span className="text-xs text-gray-500">{interaction.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ml-2 flex-shrink-0 mt-0.5 ${selectedInteraction?.id === interaction.id ? 'rotate-90' : ''}`} />
+                </div>
+                
+                {/* Expanded Details */}
+                {selectedInteraction?.id === interaction.id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="mt-3 pt-3 border-t border-gray-100"
+                  >
+                    <div className="space-y-3">
+                      <div>
+                        <h5 className="text-sm font-medium text-gray-700 mb-1">Notes:</h5>
+                        <p className="text-sm text-gray-600">{interaction.notes}</p>
+                      </div>
+                      <div>
+                        <h5 className="text-sm font-medium text-gray-700 mb-1">Original Input:</h5>
+                        <div className="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-gray-600">
+                          {interaction.originalInput}
                         </div>
                       </div>
                     </div>
-                    <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ml-2 flex-shrink-0 mt-0.5 ${selectedInteraction?.id === interaction.id ? 'rotate-90' : ''}`} />
-                  </div>
-                  
-                  {/* Expanded Details */}
-                  {selectedInteraction?.id === interaction.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="mt-4 pt-4 border-t border-gray-200"
-                    >
-                      <div className="space-y-3">
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-700 mb-1">Notes:</h5>
-                          <p className="text-sm text-gray-600">{interaction.notes}</p>
-                        </div>
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-700 mb-1">Original Input:</h5>
-                          <div className="bg-white p-3 rounded border text-sm text-gray-700">
-                            {interaction.originalInput}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
           </CardContent>
         </Card>
       </motion.div>
