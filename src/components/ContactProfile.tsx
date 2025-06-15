@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, TrendingUp, Heart, ChevronRight, Edit3, Phone, Mail, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, TrendingUp, Heart, ChevronRight, Edit3, Phone, Mail, MessageCircle, Save, Check, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Contact, Interaction } from '@/types';
+import { toast } from 'sonner';
 
 interface ContactProfileProps {
   contact: Contact;
@@ -21,6 +22,99 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
     email: contact.email || '',
     notes: contact.notes || ''
   });
+  
+  // 新增状态管理
+  const [isEditingPhone, setIsEditingPhone] = useState(!contact.phone);
+  const [isEditingEmail, setIsEditingEmail] = useState(!contact.email);
+  const [isSavingPhone, setIsSavingPhone] = useState(false);
+  const [isSavingEmail, setIsSavingEmail] = useState(false);
+  const [validPhone, setValidPhone] = useState(true);
+  const [validEmail, setValidEmail] = useState(true);
+
+  // 表单验证函数
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+    return phone === '' || phoneRegex.test(phone);
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return email === '' || emailRegex.test(email);
+  };
+
+  // 保存电话号码
+  const handleSavePhone = async () => {
+    if (!validatePhone(contactInfo.phone)) {
+      setValidPhone(false);
+      return;
+    }
+    
+    setIsSavingPhone(true);
+    
+    try {
+      // 这里应该是调用API保存电话号码的逻辑
+      // 模拟API调用
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // 假设保存成功
+      toast.success('电话号码已保存', { 
+        duration: 3000,
+        icon: <Check size={18} className="text-green-500" />
+      });
+      
+      setIsEditingPhone(false);
+      contact.phone = contactInfo.phone;
+    } catch (error) {
+      toast.error('保存失败，请重试');
+      console.error('保存电话号码失败:', error);
+    } finally {
+      setIsSavingPhone(false);
+    }
+  };
+
+  // 保存邮箱
+  const handleSaveEmail = async () => {
+    if (!validateEmail(contactInfo.email)) {
+      setValidEmail(false);
+      return;
+    }
+    
+    setIsSavingEmail(true);
+    
+    try {
+      // 这里应该是调用API保存邮箱的逻辑
+      // 模拟API调用
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // 假设保存成功
+      toast.success('邮箱地址已保存', {
+        duration: 3000,
+        icon: <Check size={18} className="text-green-500" />
+      });
+      
+      setIsEditingEmail(false);
+      contact.email = contactInfo.email;
+    } catch (error) {
+      toast.error('保存失败，请重试');
+      console.error('保存邮箱失败:', error);
+    } finally {
+      setIsSavingEmail(false);
+    }
+  };
+
+  // 处理电话号码点击
+  const handlePhoneClick = () => {
+    if (contactInfo.phone && !isEditingPhone) {
+      window.location.href = `tel:${contactInfo.phone}`;
+    }
+  };
+
+  // 处理邮箱点击
+  const handleEmailClick = () => {
+    if (contactInfo.email && !isEditingEmail) {
+      window.location.href = `mailto:${contactInfo.email}`;
+    }
+  };
 
   const interactions = [
     {
@@ -124,31 +218,148 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
 
         {/* Contact Information Management */}
         <div className="space-y-4">
+          {/* 电话号码区域 */}
           <div>
-            <Label htmlFor="phone" className="text-sm text-gray-700 mb-1.5 block">Phone</Label>
-            <div className="flex items-center">
-              <Phone className="w-4 h-4 text-gray-400 mr-2" />
-              <Input
-                id="phone"
-                value={contactInfo.phone}
-                onChange={(e) => setContactInfo(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder="Add phone number"
-                className="flex-1 bg-gray-50 border-gray-200"
-              />
-            </div>
+            <Label htmlFor="phone" className="text-sm text-gray-700 mb-1.5 block flex justify-between">
+              <span>电话</span>
+              {!isEditingPhone && contactInfo.phone && (
+                <button 
+                  onClick={() => setIsEditingPhone(true)}
+                  className="text-blue-500 text-xs flex items-center hover:text-blue-700 transition-colors"
+                  aria-label="编辑电话号码"
+                >
+                  <span className="font-medium">编辑</span>
+                </button>
+              )}
+            </Label>
+            
+            {isEditingPhone ? (
+              <div className="flex items-center">
+                <Phone className="w-4 h-4 text-gray-400 mr-2" />
+                <div className="flex-1 flex items-center space-x-2">
+                  <Input
+                    id="phone"
+                    value={contactInfo.phone}
+                    onChange={(e) => {
+                      setContactInfo(prev => ({ ...prev, phone: e.target.value }));
+                      setValidPhone(validatePhone(e.target.value));
+                    }}
+                    placeholder="添加电话号码"
+                    className={`flex-1 bg-gray-50 border-gray-200 ${!validPhone ? 'border-red-500 focus:ring-red-200' : ''}`}
+                    disabled={isSavingPhone}
+                  />
+                  <Button 
+                    onClick={handleSavePhone} 
+                    disabled={isSavingPhone}
+                    className="h-9 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-md px-4 transition-colors"
+                    aria-label="保存电话号码"
+                  >
+                    {isSavingPhone ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      <span className="text-sm font-medium">保存</span>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <motion.div 
+                className={`flex items-center p-3 rounded-lg ${contactInfo.phone ? 'bg-blue-50/70 hover:bg-blue-100/80 cursor-pointer' : 'bg-gray-50'} transition-colors`}
+                onClick={handlePhoneClick}
+                whileTap={{ scale: contactInfo.phone ? 0.98 : 1 }}
+              >
+                <Phone className={`w-4 h-4 mr-2.5 ${contactInfo.phone ? 'text-blue-500' : 'text-gray-400'}`} />
+                <span className={contactInfo.phone ? 'text-blue-700 font-medium' : 'text-gray-500'}>
+                  {contactInfo.phone || '未添加电话号码'}
+                </span>
+                {contactInfo.phone && <ExternalLink className="w-3.5 h-3.5 ml-1.5 text-blue-500" />}
+              </motion.div>
+            )}
+            {!validPhone && (
+              <motion.p 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs text-red-500 mt-1.5 ml-1"
+              >
+                请输入有效的电话号码
+              </motion.p>
+            )}
           </div>
+          
+          {/* 邮箱区域 */}
           <div>
-            <Label htmlFor="email" className="text-sm text-gray-700 mb-1.5 block">Email</Label>
-            <div className="flex items-center">
-              <Mail className="w-4 h-4 text-gray-400 mr-2" />
-              <Input
-                id="email"
-                value={contactInfo.email}
-                onChange={(e) => setContactInfo(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="Add email address"
-                className="flex-1 bg-gray-50 border-gray-200"
-              />
-            </div>
+            <Label htmlFor="email" className="text-sm text-gray-700 mb-1.5 block flex justify-between">
+              <span>邮箱</span>
+              {!isEditingEmail && contactInfo.email && (
+                <button 
+                  onClick={() => setIsEditingEmail(true)}
+                  className="text-blue-500 text-xs flex items-center hover:text-blue-700 transition-colors"
+                  aria-label="编辑邮箱"
+                >
+                  <span className="font-medium">编辑</span>
+                </button>
+              )}
+            </Label>
+            
+            {isEditingEmail ? (
+              <div className="flex items-center">
+                <Mail className="w-4 h-4 text-gray-400 mr-2" />
+                <div className="flex-1 flex items-center space-x-2">
+                  <Input
+                    id="email"
+                    value={contactInfo.email}
+                    onChange={(e) => {
+                      setContactInfo(prev => ({ ...prev, email: e.target.value }));
+                      setValidEmail(validateEmail(e.target.value));
+                    }}
+                    placeholder="添加邮箱地址"
+                    className={`flex-1 bg-gray-50 border-gray-200 ${!validEmail ? 'border-red-500 focus:ring-red-200' : ''}`}
+                    disabled={isSavingEmail}
+                  />
+                  <Button 
+                    onClick={handleSaveEmail}
+                    disabled={isSavingEmail}
+                    className="h-9 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-md px-4 transition-colors"
+                    aria-label="保存邮箱"
+                  >
+                    {isSavingEmail ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      <span className="text-sm font-medium">保存</span>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <motion.div 
+                className={`flex items-center p-3 rounded-lg ${contactInfo.email ? 'bg-blue-50/70 hover:bg-blue-100/80 cursor-pointer' : 'bg-gray-50'} transition-colors`}
+                onClick={handleEmailClick}
+                whileTap={{ scale: contactInfo.email ? 0.98 : 1 }}
+              >
+                <Mail className={`w-4 h-4 mr-2.5 ${contactInfo.email ? 'text-blue-500' : 'text-gray-400'}`} />
+                <span className={contactInfo.email ? 'text-blue-700 font-medium' : 'text-gray-500'}>
+                  {contactInfo.email || '未添加邮箱地址'}
+                </span>
+                {contactInfo.email && <ExternalLink className="w-3.5 h-3.5 ml-1.5 text-blue-500" />}
+              </motion.div>
+            )}
+            {!validEmail && (
+              <motion.p 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs text-red-500 mt-1.5 ml-1"
+              >
+                请输入有效的邮箱地址
+              </motion.p>
+            )}
           </div>
         </div>
       </motion.div>
