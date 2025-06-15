@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
+import { Contact } from '@/types';
 
 interface InsightItem {
   id: string;
@@ -105,6 +106,25 @@ const Insights = () => {
       relatedContacts: ['Emma Thompson']
     }
   ];
+  
+  // Handle contact navigation
+  const handleContactClick = (contactName: string) => {
+    // Store selected contact in localStorage to retrieve on dashboard
+    localStorage.setItem('selectedContactName', contactName);
+    // Navigate back to dashboard
+    navigate('/');
+  };
+
+  // Handle insight action
+  const handleInsightAction = (insight: InsightItem) => {
+    if (insight.relatedContacts && insight.relatedContacts.length > 0) {
+      // Navigate to the first related contact
+      handleContactClick(insight.relatedContacts[0]);
+    } else {
+      // Navigate to dashboard without a specific contact
+      navigate('/');
+    }
+  };
   
   const filteredInsights = insights.filter(insight => {
     // Filter by tab
@@ -220,7 +240,8 @@ const Insights = () => {
                       key={insight.id}
                       initial={{ opacity: 0.8 }}
                       animate={{ opacity: 1 }}
-                      className="p-5 hover:bg-gray-50"
+                      className="p-5 hover:bg-gray-50 cursor-pointer transition-colors"
+                      onClick={() => handleInsightAction(insight)}
                     >
                       <div className="flex items-start">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -247,7 +268,15 @@ const Insights = () => {
                           <div className="flex items-center justify-between">
                             <div className="flex flex-wrap gap-2">
                               {insight.relatedContacts?.map((contact, i) => (
-                                <Badge key={i} variant="secondary" className="bg-gray-100 text-gray-800 text-xs">
+                                <Badge 
+                                  key={i} 
+                                  variant="secondary" 
+                                  className="bg-gray-100 text-gray-800 text-xs cursor-pointer hover:bg-gray-200"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleContactClick(contact);
+                                  }}
+                                >
                                   {contact}
                                 </Badge>
                               ))}
@@ -259,6 +288,10 @@ const Insights = () => {
                             <Button 
                               size="sm" 
                               className="mt-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleInsightAction(insight);
+                              }}
                             >
                               Take Action
                             </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, Check, Edit2, X, TrendingUp, Sparkles, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,35 @@ const Index = () => {
   const [showTextInputModal, setShowTextInputModal] = useState(false);
   const [textInteractionAnalysis, setTextInteractionAnalysis] = useState('');
   const [showTextConfirmation, setShowTextConfirmation] = useState(false);
+
+  // Check for selected contact in localStorage on component mount
+  useEffect(() => {
+    const selectedContactName = localStorage.getItem('selectedContactName');
+    if (selectedContactName) {
+      // Find the contact by name (in a real app, this would be a more robust lookup)
+      // This is a simplified example - you would typically have all contacts in state 
+      // or fetch the contact from an API
+      const nodes = [
+        { id: 'you', name: 'You', type: 'self', coins: 0 },
+        { id: 'sarah', name: 'Sarah Chen', type: 'friend', coins: 250 },
+        { id: 'mike', name: 'Mike Johnson', type: 'colleague', coins: -80 },
+        { id: 'liu', name: 'Liu Wei', type: 'friend', coins: 150 },
+        { id: 'anna', name: 'Anna Smith', type: 'acquaintance', coins: 45 },
+        { id: 'david', name: 'David Kim', type: 'family', coins: -25 },
+        { id: 'emma', name: 'Emma Thompson', type: 'colleague', coins: 90 }
+      ];
+      
+      const foundContact = nodes.find(contact => contact.name === selectedContactName);
+      
+      if (foundContact) {
+        setSelectedContact(foundContact as Contact);
+        setActiveScreen('contact');
+      }
+      
+      // Clear the localStorage item after using it
+      localStorage.removeItem('selectedContactName');
+    }
+  }, []);
 
   const lowEntropyAlerts: EntropyAlert[] = [
     { id: "a1", name: "Sarah Chen", days: 12, suggestion: "Consider reaching out with a casual message" },
@@ -494,7 +523,13 @@ const Index = () => {
               {lowEntropyAlerts.map((alert) => (
                 <div 
                   key={alert.id}
-                  className="bg-gradient-to-r from-blue-50 to-blue-50/30 border border-blue-100 rounded-xl p-3 flex items-start"
+                  className="bg-gradient-to-r from-blue-50 to-blue-50/30 border border-blue-100 rounded-xl p-3 flex items-start cursor-pointer hover:bg-blue-50/80 transition-colors"
+                  onClick={() => {
+                    // Find the contact related to this insight
+                    const relatedContact = { id: alert.id, name: alert.name, type: 'contact', coins: 0 };
+                    setSelectedContact(relatedContact as Contact);
+                    setActiveScreen('contact');
+                  }}
                 >
                   <div className="mr-3 mt-0.5">
                     <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full">
