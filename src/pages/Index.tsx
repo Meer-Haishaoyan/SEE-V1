@@ -11,7 +11,11 @@ import ContactProfile from '@/components/ContactProfile';
 import TextInputModal from '@/components/TextInputModal';
 import { Contact, EntropyAlert } from '@/types';
 
-const Index = () => {
+interface IndexProps {
+  isMobile?: boolean;
+}
+
+const Index = ({ isMobile = false }: IndexProps) => {
   const [activeScreen, setActiveScreen] = useState<'dashboard' | 'contact'>('dashboard');
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [favorCoins, setFavorCoins] = useState(1250);
@@ -180,25 +184,25 @@ const Index = () => {
   };
 
   const renderDashboard = () => (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen">
       {/* Weather-style header with blurred background */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gradient-to-br from-blue-600 to-blue-400 text-white pt-12 pb-8 px-6 relative overflow-hidden"
+        className="bg-gradient-to-br from-background to-background-secondary text-white pt-12 pb-8 px-4 sm:px-6 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-[url('/assets/pattern-light.svg')] opacity-10"></div>
-        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-300 rounded-full filter blur-3xl opacity-20 -mr-10 -mt-10"></div>
-        <div className="max-w-3xl mx-auto relative">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full filter blur-3xl opacity-20 -mr-10 -mt-10"></div>
+        <div className={`${isMobile ? 'mobile-container' : 'max-w-3xl mx-auto'} relative`}>
           {/* App title with AI indicator */}
           <div className="flex items-center mb-3">
-            <h1 className="text-3xl font-bold">SEE</h1>
-            <div className="ml-3 flex items-center bg-white/20 backdrop-blur-md rounded-full px-2 py-0.5">
-              <BrainCircuit className="w-3.5 h-3.5 mr-1" />
-              <span className="text-xs font-medium">AI Powered</span>
+            <h1 className="text-3xl font-bold text-primary">SEE</h1>
+            <div className="ml-3 flex items-center bg-accent/50 backdrop-blur-md rounded-full px-2 py-0.5">
+              <BrainCircuit className="w-3.5 h-3.5 mr-1 text-primary" />
+              <span className="text-xs font-medium text-primary">AI Powered</span>
             </div>
           </div>
-          <p className="text-lg font-medium text-white/90">Social Empathy Engine</p>
+          <p className="text-lg font-medium text-primary/90">Social Empathy Engine</p>
           
           {/* Animated AI pulse indicator */}
           <motion.div 
@@ -213,7 +217,7 @@ const Index = () => {
           >
             <div className="mr-2.5 relative">
               <motion.div
-                className="absolute inset-0 rounded-full bg-blue-200"
+                className="absolute inset-0 rounded-full bg-primary/20"
                 animate={{
                   scale: [1, 1.2, 1],
                   opacity: [0.3, 0.1, 0.3],
@@ -224,17 +228,17 @@ const Index = () => {
                   ease: "easeInOut",
                 }}
               />
-              <Sparkles className="w-6 h-6 relative z-10" />
+              <Sparkles className="w-6 h-6 relative z-10 text-primary" />
             </div>
             <div className="text-sm">
-              <div className="font-semibold">AI Analysis</div>
-              <div className="text-xs opacity-80">Optimizing your social network</div>
+              <div className="font-semibold text-primary">AI Analysis</div>
+              <div className="text-xs opacity-80 text-secondary">Optimizing your social network</div>
             </div>
           </motion.div>
         </div>
       </motion.div>
 
-      <div className="max-w-3xl mx-auto px-4 -mt-5">
+      <div className={`${isMobile ? 'mobile-container' : 'max-w-3xl mx-auto px-4'} -mt-5`}>
         {/* Social Network Graph - Now with Apple-style card */}
         <motion.div
           initial={{ scale: 0.98, opacity: 0 }}
@@ -242,348 +246,262 @@ const Index = () => {
           transition={{ delay: 0.1 }}
           className="mb-8 relative"
         >
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-5">
+          <div className="app-card overflow-hidden">
+            <div className={`${isMobile ? 'p-3' : 'p-5'}`}>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Social Network</h2>
+                <h2 className="text-xl font-semibold text-primary">社交网络</h2>
                 <div className="flex items-center space-x-1.5">
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                    <BrainCircuit className="w-3 h-3 mr-1" />
-                    AI Analysis
+                  <Badge variant="outline" className="bg-accent/50 text-primary border-border">
+                    {favorCoins} FC
                   </Badge>
                 </div>
               </div>
-
-              {/* Network Graph */}
-              <div className="relative h-[270px]">
+              <div className={`${isMobile ? 'h-64' : 'h-80'} rounded-lg overflow-hidden`}>
                 <NetworkGraph 
                   onContactSelect={(contact) => {
                     setSelectedContact(contact);
                     setActiveScreen('contact');
                   }}
                   onRelationSelect={handleRelationSelect}
-                  embedded={true}
+                  embedded={false}
                 />
-                
-                {/* Selected relationship details */}
-                <AnimatePresence>
-                  {selectedRelation && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xl p-3 rounded-xl shadow-sm border border-gray-100 w-48"
-                    >
-                      <div className="space-y-2">
-                        <div>
-                          <span className="text-gray-600 text-xs">From</span>
-                          <div className="font-medium">{selectedRelation.from}</div>
-                        </div>
-                        <div>
-                          <span className="text-gray-600 text-xs">To</span>
-                          <div className="font-medium">{selectedRelation.to}</div>
-                        </div>
-                        <div>
-                          <span className="text-gray-600 text-xs">Interaction Strength</span>
-                          <div className="font-medium">{Math.round(selectedRelation.strength * 100)}%</div>
-                        </div>
-                        <div>
-                          <span className="text-gray-600 text-xs">Net Value</span>
-                          <div className={`font-medium ${
-                            selectedRelation.balance === 'positive' ? 'text-green-600' : 
-                            selectedRelation.balance === 'negative' ? 'text-red-600' : 'text-gray-700'
-                          }`}>
-                            {selectedRelation.balance === 'positive' ? '+125' : 
-                            selectedRelation.balance === 'negative' ? '-80' : '0'}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Apple Weather style bottom panel with AI insights */}
-            <div className="bg-gray-50/80 backdrop-blur-sm border-t border-gray-200 px-5 py-3.5">
-              <div className="flex items-center text-sm">
-                <Sparkles className="w-4 h-4 text-blue-500 mr-2" />
-                <span className="font-medium text-gray-800">AI Insight:</span>
-                <span className="text-gray-600 ml-2">Your network has high cohesion. Strengthening connections with Liu Wei and Sarah can improve overall stability</span>
               </div>
             </div>
           </div>
         </motion.div>
 
-      {/* Input Section */}
-      <motion.div 
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm overflow-hidden mb-8"
-      >
-        <div className="p-5">
-          <h3 className="text-lg font-medium text-gray-800 mb-5 flex items-center">
-            <span>Record Social Interaction</span>
-            <Badge variant="outline" className="ml-3 bg-blue-50 text-blue-700 border-blue-200 font-normal">
-              <BrainCircuit className="w-3 h-3 mr-1" />
-              AI Assisted
-            </Badge>
-          </h3>
-        
-        {/* Voice Recording Interface */}
-        {isRecording && (
-          <div className="mb-4">
-            <div className="flex justify-center mb-3">
-              <motion.div 
-                className="w-20 h-20 rounded-full bg-red-500 flex items-center justify-center shadow-lg"
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                  boxShadow: [
-                    '0 0 0 0 rgba(239, 68, 68, 0.7)',
-                    '0 0 0 10px rgba(239, 68, 68, 0)',
-                    '0 0 0 0 rgba(239, 68, 68, 0)'
-                  ]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity
-                }}
-                onClick={handleStopRecording}
-              >
-                <MicOff className="w-8 h-8 text-white" />
-              </motion.div>
-            </div>
-            <div className="text-center">
-              <h4 className="font-medium text-gray-800">Recording...</h4>
-              <p className="text-sm text-gray-600">Tap to stop</p>
-            </div>
-
-            {/* Live transcription */}
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-gray-700">{transcription}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Processing State */}
-        {isProcessing && (
-          <div className="text-center py-6">
-            <div className="flex justify-center mb-4">
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              >
-                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
-              </motion.div>
-            </div>
-            <h4 className="font-medium text-gray-800">AI Processing</h4>
-            <p className="text-sm text-gray-600">Analyzing your interaction...</p>
-          </div>
-        )}
-
-        {/* Voice Analysis Confirmation */}
-        {showConfirmation && !isProcessing && !isRecording && (
-          <div>
-            <div className="mb-5">
-              <div className="flex justify-between mb-2">
-                <h4 className="font-medium text-gray-800">Analysis Result</h4>
-                <button 
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="text-blue-600 text-sm flex items-center"
-                >
-                  {isEditing ? 'Done' : 'Edit'}
-                  {!isEditing && <Edit2 className="ml-1 w-3 h-3" />}
-                </button>
+        {/* Voice Input Section */}
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="app-card overflow-hidden">
+            <div className={`${isMobile ? 'p-3' : 'p-5'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-primary">记录互动</h2>
+                {!isRecording && !isProcessing && !showConfirmation && !showTextInputModal && (
+                  <Button 
+                    variant="outline"
+                    size={isMobile ? "sm" : "default"}
+                    className="text-primary border-border bg-accent/30 hover:bg-accent/50"
+                    onClick={() => setShowTextInputModal(true)}
+                  >
+                    <Edit2 className="w-4 h-4 mr-2" />
+                    文字输入
+                  </Button>
+                )}
               </div>
-              
-              {isEditing ? (
-                <Textarea
-                  value={editedAnalysis}
-                  onChange={(e) => setEditedAnalysis(e.target.value)}
-                  className="w-full h-32 text-sm"
-                />
-              ) : (
-                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap text-sm">
-                  {aiAnalysis}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button 
-                onClick={handleConfirmAnalysis}
-                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
-              >
-                <Check className="w-4 h-4 mr-2" />
-                Confirm
-              </Button>
-              <Button 
-                onClick={handleRejectAnalysis}
-                variant="outline"
-                className="flex-1 border-gray-300 text-gray-700"
-              >
-                <X className="w-4 h-4 mr-2" />
-                Discard
-              </Button>
+
+              <AnimatePresence mode="wait">
+                {/* Recording/Processing State */}
+                {(isRecording || isProcessing) && !showConfirmation && !showTextConfirmation && (
+                  <motion.div
+                    key="recording"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="text-center py-6"
+                  >
+                    {isRecording ? (
+                      <>
+                        <motion.button
+                          onClick={handleStopRecording}
+                          className="w-20 h-20 rounded-full bg-nodeNegative/90 flex items-center justify-center shadow-lg mx-auto"
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <MicOff className="w-10 h-10 text-white" />
+                        </motion.button>
+                        <p className="mt-4 text-primary">正在录音... 点击停止</p>
+                        {transcription && (
+                          <div className="mt-4 p-3 bg-accent/30 rounded-lg text-left">
+                            <p className="text-primary">{transcription}</p>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="py-8">
+                        <motion.div
+                          className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        />
+                        <p className="text-lg font-medium text-primary">AI分析中...</p>
+                        <p className="text-sm text-secondary mt-2">处理语言并提取互动细节</p>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {/* Ready to Record State */}
+                {!isRecording && !isProcessing && !showConfirmation && !showTextConfirmation && !showTextInputModal && (
+                  <motion.div
+                    key="ready"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col items-center justify-center"
+                  >
+                    <motion.button
+                      onClick={handleStartRecording}
+                      className="w-24 h-24 rounded-full bg-primary flex items-center justify-center shadow-lg"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Mic className="w-12 h-12 text-white" />
+                    </motion.button>
+                    <p className="mt-4 text-primary text-center">点击开始录音<br />分享你的社交互动</p>
+                  </motion.div>
+                )}
+
+                {/* Analysis Confirmation */}
+                {showConfirmation && (
+                  <motion.div
+                    key="confirmation"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="space-y-4"
+                  >
+                    <div className="bg-accent/30 p-4 rounded-lg">
+                      <h3 className="font-medium text-primary text-lg mb-2">AI分析结果</h3>
+                      
+                      {isEditing ? (
+                        <div className="mb-3">
+                          <Textarea 
+                            value={editedAnalysis} 
+                            onChange={(e) => setEditedAnalysis(e.target.value)} 
+                            className="bg-accent/50 border-border text-primary min-h-[120px]"
+                          />
+                        </div>
+                      ) : (
+                        <pre className="whitespace-pre-wrap text-secondary text-sm mb-3">{aiAnalysis}</pre>
+                      )}
+                      
+                      <div className="flex items-center justify-end space-x-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="text-secondary hover:text-primary border-border bg-accent/30"
+                          onClick={() => setIsEditing(!isEditing)}
+                        >
+                          {isEditing ? 'Cancel Edit' : 'Edit'}
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <Button 
+                        variant="outline" 
+                        className="text-secondary hover:text-primary border-border bg-accent/30"
+                        onClick={handleRejectAnalysis}
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        取消
+                      </Button>
+                      <Button 
+                        onClick={handleConfirmAnalysis}
+                        className="bg-primary hover:bg-primary/80 text-primary-foreground"
+                      >
+                        <Check className="w-4 h-4 mr-2" />
+                        确认
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Text Input Confirmation */}
+                {showTextConfirmation && (
+                  <motion.div
+                    key="textConfirmation"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="space-y-4"
+                  >
+                    <div className="bg-accent/30 p-4 rounded-lg">
+                      <h3 className="font-medium text-primary text-lg mb-2">文本分析结果</h3>
+                      <pre className="whitespace-pre-wrap text-secondary text-sm">{textInteractionAnalysis}</pre>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <Button 
+                        variant="outline" 
+                        className="text-secondary hover:text-primary border-border bg-accent/30"
+                        onClick={handleRejectTextAnalysis}
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        取消
+                      </Button>
+                      <Button 
+                        onClick={handleConfirmTextAnalysis}
+                        className="bg-primary hover:bg-primary/80 text-primary-foreground"
+                      >
+                        <Check className="w-4 h-4 mr-2" />
+                        确认
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
-        )}
-        
-        {/* Text Analysis Confirmation */}
-        {showTextConfirmation && !isProcessing && (
-          <div>
-            <div className="mb-5">
-              <div className="flex justify-between mb-2">
-                <h4 className="font-medium text-gray-800">Text Analysis Result</h4>
-              </div>
-              
-              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 whitespace-pre-wrap text-sm">
-                {textInteractionAnalysis}
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button 
-                onClick={handleConfirmTextAnalysis}
-                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
-              >
-                <Check className="w-4 h-4 mr-2" />
-                Confirm
-              </Button>
-              <Button 
-                onClick={handleRejectTextAnalysis}
-                variant="outline"
-                className="flex-1 border-gray-300 text-gray-700"
-              >
-                <X className="w-4 h-4 mr-2" />
-                Discard
-              </Button>
-            </div>
-          </div>
-        )}
+        </motion.div>
 
-        {/* Initial state - recording options */}
-        {!isRecording && !isProcessing && !showConfirmation && !showTextConfirmation && (
-          <div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <Button 
-                onClick={handleStartRecording}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 flex items-center justify-center py-6"
-              >
-                <Mic className="w-5 h-5 mr-2" />
-                <span className="font-medium">Voice Record</span>
-              </Button>
-
-              <Button 
-                onClick={() => setShowTextInputModal(true)}
-                className="bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 flex items-center justify-center py-6"
-              >
-                <TrendingUp className="w-5 h-5 mr-2" />
-                <span className="font-medium">Text Record</span>
-              </Button>
-            </div>
-            
-            <p className="text-xs text-gray-500 text-center">Record your social interactions, and AI will automatically analyze and quantify relationship changes</p>
-          </div>
-        )}
-        </div>
-
-        {/* AI Activity Indicator - Weather app style bottom panel */}
-        <div className="bg-gray-50/80 backdrop-blur-sm border-t border-gray-200 px-5 py-3.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-1.5 text-sm">
-              <motion.div 
-                className="w-2 h-2 bg-green-500 rounded-full" 
-                animate={{ opacity: [1, 0.4, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <span className="text-gray-600">AI Model Active</span>
-            </div>
-            <div className="text-xs text-gray-500">Today's Analysis: 12 interactions</div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* AI Recommendations */}
-      <motion.div 
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="mb-8"
-      >
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm overflow-hidden">
-          <div className="p-5">
-            <div className="flex items-center mb-4">
-              <Sparkles className="text-blue-500 w-5 h-5 mr-2" />
-              <h3 className="text-lg font-medium text-gray-800">AI Insights & Recommendations</h3>
-            </div>
-            
-            <div className="space-y-4">
-              {lowEntropyAlerts.map((alert) => (
-                <div 
-                  key={alert.id}
-                  className="bg-gradient-to-r from-blue-50 to-blue-50/30 border border-blue-100 rounded-xl p-3 flex items-start cursor-pointer hover:bg-blue-50/80 transition-colors"
-                  onClick={() => {
-                    // Find the contact related to this insight
-                    const relatedContact = { id: alert.id, name: alert.name, type: 'contact', coins: 0 };
-                    setSelectedContact(relatedContact as Contact);
-                    setActiveScreen('contact');
-                  }}
-                >
-                  <div className="mr-3 mt-0.5">
-                    <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full">
-                      {alert.days}
+        {/* Low Entropy Alert Cards */}
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mb-6"
+        >
+          <h2 className="text-xl font-semibold text-primary mb-4">关系警报</h2>
+          
+          <div className={`space-y-3 ${isMobile ? '' : 'grid grid-cols-1 gap-3'}`}>
+            {lowEntropyAlerts.map((alert) => (
+              <Card key={alert.id} className="border-none bg-accent/30 shadow-sm">
+                <CardContent className={`${isMobile ? 'p-3' : 'p-4'} flex items-center justify-between`}>
+                  <div>
+                    <div className="font-medium text-primary">{alert.name}</div>
+                    <div className="text-sm text-secondary flex items-center mt-1">
+                      <TrendingUp className="w-3.5 h-3.5 mr-1.5 text-nodeNegative" /> 
+                      {alert.days}天未互动
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium text-gray-800">{alert.name}</h4>
-                    <p className="text-sm text-gray-600 mt-0.5">{alert.suggestion}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  <Button
+                    variant="outline"
+                    size={isMobile ? "sm" : "default"}
+                    className="shrink-0 text-secondary hover:text-primary border-border bg-accent/50"
+                  >
+                    关注
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          
-          {/* Weather app style bottom panel */}
-          <div className="bg-gray-50/80 backdrop-blur-sm border-t border-gray-200 px-5 py-3.5">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">View All AI Insights</span>
-              <motion.div 
-                className="w-5 h-5 flex items-center justify-center text-blue-500 bg-blue-50 rounded-full cursor-pointer"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.href = "/insights"}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                  <path fillRule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" />
-                </svg>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  </div>
-  );
+        </motion.div>
+      </div>
 
-  return (
-    <div>
-      {activeScreen === 'dashboard' && renderDashboard()}
-      {activeScreen === 'contact' && selectedContact && (
-        <ContactProfile 
-          contact={selectedContact} 
-          onBack={() => setActiveScreen('dashboard')}
-        />
-      )}
-      
-      {/* Text Input Modal */}
-      <TextInputModal 
+      {/* Text input modal */}
+      <TextInputModal
         isOpen={showTextInputModal}
-        onClose={() => setShowTextInputModal(false)}
+        onClose={() => setShowTextInputModal(false)} 
         onSubmit={handleSubmitTextInteraction}
       />
     </div>
+  );
+
+  return (
+    <>
+      {activeScreen === 'dashboard' && renderDashboard()}
+      {activeScreen === 'contact' && selectedContact && (
+        <ContactProfile
+          contact={selectedContact as Contact}
+          onBack={() => setActiveScreen('dashboard')}
+        />
+      )}
+    </>
   );
 };
 
