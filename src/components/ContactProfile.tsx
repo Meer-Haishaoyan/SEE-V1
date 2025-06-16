@@ -180,41 +180,41 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
   ];
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-3xl mx-auto">
         {/* Header with back button */}
         <div className="flex items-center mb-6 -ml-3">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full text-primary hover:text-primary hover:bg-accent/50"
+            className="rounded-full"
             onClick={onBack}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-semibold ml-2 text-primary">联系人详情</h1>
+          <h1 className="text-2xl font-semibold ml-2">Contact Details</h1>
         </div>
 
         {/* Contact Header */}
         <motion.div
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="app-card mb-6"
+          className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6"
         >
           <div className="flex items-center space-x-4 mb-5">
-            <Avatar className="w-16 h-16 border-2 border-border bg-card">
-              <AvatarFallback className="text-xl font-semibold bg-primary text-primary-foreground">
+            <Avatar className="w-16 h-16 border-2 border-gray-100">
+              <AvatarFallback className="text-xl font-semibold bg-blue-500 text-white">
                 {contact.name.split(' ').map((n: string) => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-primary">{contact.name}</h2>
-              <p className="text-secondary text-sm capitalize">{contact.type}</p>
+              <h2 className="text-xl font-semibold text-gray-800">{contact.name}</h2>
+              <p className="text-gray-600 text-sm capitalize">{contact.type}</p>
               <div className="flex items-center mt-2">
-                <span className="text-sm text-secondary mr-2">互动平衡:</span>
+                <span className="text-sm text-gray-500 mr-2">Favor Balance:</span>
                 <Badge 
                   variant={contact.coins > 0 ? "default" : "destructive"}
-                  className={contact.coins > 0 ? "bg-nodePositive/20 text-nodePositive font-medium border-nodePositive/30" : "bg-nodeNegative/20 text-nodeNegative font-medium border-nodeNegative/30"}
+                  className={contact.coins > 0 ? "bg-green-100 text-green-800 font-medium" : "bg-red-100 text-red-800 font-medium"}
                 >
                   {contact.coins > 0 ? '+' : ''}{contact.coins} FC
                 </Badge>
@@ -226,22 +226,22 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
           <div className="space-y-4">
             {/* Phone Number Section */}
             <div>
-              <Label htmlFor="phone" className="text-sm text-secondary mb-1.5 block flex justify-between">
-                <span>电话</span>
+              <Label htmlFor="phone" className="text-sm text-gray-700 mb-1.5 block flex justify-between">
+                <span>Phone</span>
                 {!isEditingPhone && contactInfo.phone && (
                   <button 
                     onClick={() => setIsEditingPhone(true)}
-                    className="text-primary text-xs flex items-center hover:text-primary/80 transition-colors"
+                    className="text-blue-500 text-xs flex items-center hover:text-blue-700 transition-colors"
                     aria-label="Edit phone number"
                   >
-                    <span className="font-medium">编辑</span>
+                    <span className="font-medium">Edit</span>
                   </button>
                 )}
               </Label>
               
               {isEditingPhone ? (
                 <div className="flex items-center">
-                  <Phone className="w-4 h-4 text-secondary mr-2" />
+                  <Phone className="w-4 h-4 text-gray-400 mr-2" />
                   <div className="flex-1 flex items-center space-x-2">
                     <Input
                       id="phone"
@@ -250,70 +250,70 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
                         setContactInfo(prev => ({ ...prev, phone: e.target.value }));
                         setValidPhone(validatePhone(e.target.value));
                       }}
-                      placeholder="添加电话号码"
-                      className={`flex-1 bg-accent/50 border-border text-primary ${!validPhone ? 'border-nodeNegative focus:ring-nodeNegative/20' : ''}`}
+                      placeholder="Add phone number"
+                      className={`flex-1 bg-gray-50 border-gray-200 ${!validPhone ? 'border-red-500 focus:ring-red-200' : ''}`}
                       disabled={isSavingPhone}
                     />
                     <Button 
                       onClick={handleSavePhone} 
                       disabled={isSavingPhone}
-                      className="h-9 bg-primary hover:bg-primary/80 text-primary-foreground border-0 rounded-md px-4 transition-colors"
+                      className="h-9 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-md px-4 transition-colors"
                       aria-label="Save phone number"
                     >
                       {isSavingPhone ? (
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full"
+                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                         />
                       ) : (
-                        <span className="text-sm font-medium">保存</span>
+                        <span className="text-sm font-medium">Save</span>
                       )}
                     </Button>
                   </div>
                 </div>
               ) : (
                 <motion.div 
-                  className={`flex items-center p-3 rounded-lg ${contactInfo.phone ? 'bg-accent/50 hover:bg-accent/80 cursor-pointer' : 'bg-accent/30'} transition-colors`}
+                  className={`flex items-center p-3 rounded-lg ${contactInfo.phone ? 'bg-blue-50/70 hover:bg-blue-100/80 cursor-pointer' : 'bg-gray-50'} transition-colors`}
                   onClick={handlePhoneClick}
                   whileTap={{ scale: contactInfo.phone ? 0.98 : 1 }}
                 >
-                  <Phone className={`w-4 h-4 mr-2.5 ${contactInfo.phone ? 'text-primary' : 'text-secondary'}`} />
-                  <span className={contactInfo.phone ? 'text-primary font-medium' : 'text-secondary'}>
-                    {contactInfo.phone || '未添加电话号码'}
+                  <Phone className={`w-4 h-4 mr-2.5 ${contactInfo.phone ? 'text-blue-500' : 'text-gray-400'}`} />
+                  <span className={contactInfo.phone ? 'text-blue-700 font-medium' : 'text-gray-500'}>
+                    {contactInfo.phone || 'No phone number added'}
                   </span>
-                  {contactInfo.phone && <ExternalLink className="w-3.5 h-3.5 ml-1.5 text-primary" />}
+                  {contactInfo.phone && <ExternalLink className="w-3.5 h-3.5 ml-1.5 text-blue-500" />}
                 </motion.div>
               )}
               {!validPhone && (
                 <motion.p 
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-xs text-nodeNegative mt-1.5 ml-1"
+                  className="text-xs text-red-500 mt-1.5 ml-1"
                 >
-                  请输入有效的电话号码
+                  Please enter a valid phone number
                 </motion.p>
               )}
             </div>
             
             {/* Email Section */}
             <div>
-              <Label htmlFor="email" className="text-sm text-secondary mb-1.5 block flex justify-between">
-                <span>电子邮件</span>
+              <Label htmlFor="email" className="text-sm text-gray-700 mb-1.5 block flex justify-between">
+                <span>Email</span>
                 {!isEditingEmail && contactInfo.email && (
                   <button 
                     onClick={() => setIsEditingEmail(true)}
-                    className="text-primary text-xs flex items-center hover:text-primary/80 transition-colors"
+                    className="text-blue-500 text-xs flex items-center hover:text-blue-700 transition-colors"
                     aria-label="Edit email"
                   >
-                    <span className="font-medium">编辑</span>
+                    <span className="font-medium">Edit</span>
                   </button>
                 )}
               </Label>
               
               {isEditingEmail ? (
                 <div className="flex items-center">
-                  <Mail className="w-4 h-4 text-secondary mr-2" />
+                  <Mail className="w-4 h-4 text-gray-400 mr-2" />
                   <div className="flex-1 flex items-center space-x-2">
                     <Input
                       id="email"
@@ -322,48 +322,48 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
                         setContactInfo(prev => ({ ...prev, email: e.target.value }));
                         setValidEmail(validateEmail(e.target.value));
                       }}
-                      placeholder="添加电子邮件"
-                      className={`flex-1 bg-accent/50 border-border text-primary ${!validEmail ? 'border-nodeNegative focus:ring-nodeNegative/20' : ''}`}
+                      placeholder="Add email address"
+                      className={`flex-1 bg-gray-50 border-gray-200 ${!validEmail ? 'border-red-500 focus:ring-red-200' : ''}`}
                       disabled={isSavingEmail}
                     />
                     <Button 
                       onClick={handleSaveEmail}
                       disabled={isSavingEmail}
-                      className="h-9 bg-primary hover:bg-primary/80 text-primary-foreground border-0 rounded-md px-4 transition-colors"
+                      className="h-9 bg-blue-500 hover:bg-blue-600 text-white border-0 rounded-md px-4 transition-colors"
                       aria-label="Save email"
                     >
                       {isSavingEmail ? (
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full"
+                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                         />
                       ) : (
-                        <span className="text-sm font-medium">保存</span>
+                        <span className="text-sm font-medium">Save</span>
                       )}
                     </Button>
                   </div>
                 </div>
               ) : (
                 <motion.div 
-                  className={`flex items-center p-3 rounded-lg ${contactInfo.email ? 'bg-accent/50 hover:bg-accent/80 cursor-pointer' : 'bg-accent/30'} transition-colors`}
+                  className={`flex items-center p-3 rounded-lg ${contactInfo.email ? 'bg-blue-50/70 hover:bg-blue-100/80 cursor-pointer' : 'bg-gray-50'} transition-colors`}
                   onClick={handleEmailClick}
                   whileTap={{ scale: contactInfo.email ? 0.98 : 1 }}
                 >
-                  <Mail className={`w-4 h-4 mr-2.5 ${contactInfo.email ? 'text-primary' : 'text-secondary'}`} />
-                  <span className={contactInfo.email ? 'text-primary font-medium' : 'text-secondary'}>
-                    {contactInfo.email || '未添加电子邮件'}
+                  <Mail className={`w-4 h-4 mr-2.5 ${contactInfo.email ? 'text-blue-500' : 'text-gray-400'}`} />
+                  <span className={contactInfo.email ? 'text-blue-700 font-medium' : 'text-gray-500'}>
+                    {contactInfo.email || 'No email address added'}
                   </span>
-                  {contactInfo.email && <ExternalLink className="w-3.5 h-3.5 ml-1.5 text-primary" />}
+                  {contactInfo.email && <ExternalLink className="w-3.5 h-3.5 ml-1.5 text-blue-500" />}
                 </motion.div>
               )}
               {!validEmail && (
                 <motion.p 
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-xs text-nodeNegative mt-1.5 ml-1"
+                  className="text-xs text-red-500 mt-1.5 ml-1"
                 >
-                  请输入有效的电子邮件地址
+                  Please enter a valid email address
                 </motion.p>
               )}
             </div>
@@ -376,16 +376,16 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="mb-6 app-card">
+          <Card className="mb-6 border border-gray-100 shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium text-primary">推荐操作</CardTitle>
+              <CardTitle className="text-base font-medium text-gray-800">Recommended Actions</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {suggestions.map((suggestion, index) => (
                   <div key={index} className="flex items-start space-x-2.5">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-                    <p className="text-sm text-secondary">{suggestion}</p>
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                    <p className="text-sm text-gray-700">{suggestion}</p>
                   </div>
                 ))}
               </div>
@@ -399,11 +399,11 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="app-card">
+          <Card className="border border-gray-100 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base font-medium flex items-center text-primary">
-                <Calendar className="w-4 h-4 mr-2 text-primary" />
-                互动历史
+              <CardTitle className="text-base font-medium flex items-center text-gray-800">
+                <Calendar className="w-4 h-4 mr-2 text-blue-500" />
+                Interaction History
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -413,7 +413,7 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
                   initial={{ opacity: 0.8 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.05 * index }}
-                  className="bg-card/80 rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors border border-border"
+                  className="bg-white rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors border border-gray-100"
                   onClick={() => setSelectedInteraction(selectedInteraction?.id === interaction.id ? null : interaction as Interaction)}
                 >
                   <div className="flex items-start justify-between w-full">
@@ -423,23 +423,23 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-1">
-                          <h4 className="font-medium text-primary text-sm leading-tight pr-2">{interaction.description}</h4>
+                          <h4 className="font-medium text-gray-800 text-sm leading-tight pr-2">{interaction.description}</h4>
                           <Badge 
                             variant={interaction.coins > 0 ? "default" : "destructive"}
-                            className={`text-xs flex-shrink-0 ${interaction.coins > 0 ? "bg-nodePositive/20 text-nodePositive border-nodePositive/30" : "bg-nodeNegative/20 text-nodeNegative border-nodeNegative/30"}`}
+                            className={`text-xs flex-shrink-0 ${interaction.coins > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
                           >
                             {interaction.coins > 0 ? '+' : ''}{interaction.coins} FC
                           </Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-xs px-2 py-0.5 bg-accent/50 rounded-full text-secondary border border-border">
+                          <span className="text-xs px-2 py-0.5 bg-gray-50 rounded-full text-gray-600 border border-gray-200">
                             {getTypeLabel(interaction.type)}
                           </span>
-                          <span className="text-xs text-secondary">{interaction.date}</span>
+                          <span className="text-xs text-gray-500">{interaction.date}</span>
                         </div>
                       </div>
                     </div>
-                    <ChevronRight className={`w-4 h-4 text-secondary transition-transform ml-2 flex-shrink-0 mt-0.5 ${selectedInteraction?.id === interaction.id ? 'rotate-90' : ''}`} />
+                    <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ml-2 flex-shrink-0 mt-0.5 ${selectedInteraction?.id === interaction.id ? 'rotate-90' : ''}`} />
                   </div>
                   
                   {/* Expanded Details */}
@@ -447,19 +447,21 @@ const ContactProfile = ({ contact, onBack }: ContactProfileProps) => {
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
-                      className="mt-4 pt-4 border-t border-border"
+                      exit={{ height: 0, opacity: 0 }}
+                      className="mt-3 pt-3 border-t border-gray-100"
                     >
-                      <h5 className="text-sm font-medium mb-2 text-primary">备注</h5>
-                      <p className="text-sm text-secondary mb-3">{interaction.notes}</p>
-                      
-                      {interaction.originalInput && (
-                        <>
-                          <h5 className="text-sm font-medium mb-2 mt-4 text-primary">原始输入</h5>
-                          <div className="bg-accent/30 rounded-lg p-3 text-sm text-secondary">
+                      <div className="space-y-3">
+                        <div>
+                          <h5 className="text-sm font-medium text-gray-700 mb-1">Notes:</h5>
+                          <p className="text-sm text-gray-600">{interaction.notes}</p>
+                        </div>
+                        <div>
+                          <h5 className="text-sm font-medium text-gray-700 mb-1">Original Input:</h5>
+                          <div className="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-gray-600">
                             {interaction.originalInput}
                           </div>
-                        </>
-                      )}
+                        </div>
+                      </div>
                     </motion.div>
                   )}
                 </motion.div>

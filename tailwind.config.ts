@@ -14,23 +14,15 @@ export default {
 			center: true,
 			padding: '2rem',
 			screens: {
-				'sm': '640px',
-				'md': '768px',
-				'lg': '1024px',
-				'xl': '1280px',
 				'2xl': '1400px'
 			}
 		},
 		extend: {
-			screens: {
-				'xs': '375px',
-			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
-				'background-secondary': 'hsl(var(--background-secondary))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -76,23 +68,6 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
-			spacing: {
-				'card': '16px',
-				'card-gap': '24px',
-				'content-gap': '8px',
-			},
-			fontSize: {
-				'title-lg': ['28px', { lineHeight: '1.2', fontWeight: '700' }],
-				'title-normal': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
-				'data': ['24px', { lineHeight: '1.2', fontWeight: '700' }],
-				'description': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
-			},
-			boxShadow: {
-				'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-			},
-			backdropBlur: {
-				'card': '8px',
-			},
 			keyframes: {
 				'accordion-down': {
 					from: {
@@ -109,21 +84,11 @@ export default {
 					to: {
 						height: '0'
 					}
-				},
-				'pulse-soft': {
-					'0%, 100%': { opacity: '1' },
-					'50%': { opacity: '0.8' },
-				},
-				'scale-in': {
-					'0%': { transform: 'scale(0.95)', opacity: '0' },
-					'100%': { transform: 'scale(1)', opacity: '1' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'pulse-soft': 'pulse-soft 2s infinite ease-in-out',
-				'scale-in': 'scale-in 0.2s ease-out',
+				'accordion-up': 'accordion-up 0.2s ease-out'
 			}
 		}
 	},

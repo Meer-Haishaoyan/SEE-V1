@@ -82,31 +82,31 @@ const NetworkGraph = ({
 
   // Enhanced Apple-style color scheme
   const theme = {
-    // Base colors 
-    bgGradient: 'rgba(11, 20, 38, 0.8)', // 深蓝色星空背景
-    nodeSelf: 'rgba(255, 255, 255, 1)', // 白色主节点
-    nodePositive: 'rgba(48, 209, 88, 1)', // 保持原色但更亮
-    nodeNegative: 'rgba(255, 69, 58, 1)', // 保持原色但更亮
-    nodeNeutral: 'rgba(208, 208, 208, 1)', // 浅灰色中性节点
+    // Base colors
+    bgGradient: 'rgba(240, 245, 250, 0.8)',
+    nodeSelf: 'rgba(10, 132, 255, 1)',
+    nodePositive: 'rgba(48, 209, 88, 1)', 
+    nodeNegative: 'rgba(255, 69, 58, 1)',
+    nodeNeutral: 'rgba(142, 142, 147, 1)',
     
     // Link styles with gradients
-    linkPositive: 'rgba(48, 209, 88, 0.7)', // 半透明正向连接
-    linkNegative: 'rgba(255, 69, 58, 0.6)', // 半透明负向连接
-    linkNeutral: 'rgba(208, 208, 208, 0.4)', // 半透明中性连接
+    linkPositive: 'rgba(48, 209, 88, 0.7)',
+    linkNegative: 'rgba(255, 69, 58, 0.6)',
+    linkNeutral: 'rgba(142, 142, 147, 0.5)',
     
     // Interaction states
-    nodeSelectedBorder: 'rgba(255, 255, 255, 1)', // 白色选中边框
-    nodeHoverBorder: 'rgba(255, 160, 0, 1)', // 保留橙色悬停边框
+    nodeSelectedBorder: 'rgba(0, 122, 255, 1)',
+    nodeHoverBorder: 'rgba(255, 159, 10, 1)',
     
     // Text styles
-    textPrimary: 'rgba(255, 255, 255, 1)', // 白色主要文字
-    textSecondary: 'rgba(208, 208, 208, 1)', // 浅灰色次要文字
+    textPrimary: 'rgba(28, 28, 30, 1)',
+    textSecondary: 'rgba(110, 110, 115, 1)',
     
-    // Group colors - 调整为更符合星空主题的色彩
-    groupFriends: 'rgba(52, 199, 89, 1)', // 绿色，朋友
-    groupFamily: 'rgba(10, 132, 255, 1)', // 蓝色，家人
-    groupColleagues: 'rgba(255, 149, 0, 1)', // 橙色，同事
-    groupAcquaintances: 'rgba(175, 82, 222, 1)', // 紫色，熟人
+    // Group colors
+    groupFriends: 'rgba(52, 199, 89, 1)',
+    groupFamily: 'rgba(10, 132, 255, 1)',
+    groupColleagues: 'rgba(255, 149, 0, 1)',
+    groupAcquaintances: 'rgba(175, 82, 222, 1)',
   };
 
   // Group definitions
@@ -739,57 +739,20 @@ const NetworkGraph = ({
       });
     }
 
-    // 星空背景效果 - 适配深蓝色星空主题
-    if (!embedded) {
+    // Fancy background with subtle gradient
+    if (!embedded && viewLevel !== 'overview') {
       ctx.save();
-      const canvasWidth = canvas.width / (dpr * zoomLevel);
-      const canvasHeight = canvas.height / (dpr * zoomLevel);
-      const centerX = canvasWidth / 2 - centerOffset.x / zoomLevel;
-      const centerY = canvasHeight / 2 - centerOffset.y / zoomLevel;
+      const centerX = canvas.width / (2 * dpr * zoomLevel) - centerOffset.x / zoomLevel;
+      const centerY = canvas.height / (2 * dpr * zoomLevel) - centerOffset.y / zoomLevel;
+      const radius = Math.max(canvas.width, canvas.height) / (dpr * zoomLevel);
       
-      // 渐变背景
-      const gradient = ctx.createRadialGradient(
-        centerX, centerY, 0,
-        centerX, centerY, Math.max(canvasWidth, canvasHeight) / 1.5
-      );
-      gradient.addColorStop(0, 'rgba(16, 30, 54, 0.3)'); // #101E36
-      gradient.addColorStop(1, 'rgba(11, 20, 38, 0.2)'); // #0B1426
+      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+      gradient.addColorStop(0, 'rgba(240, 245, 250, 0.1)');
+      gradient.addColorStop(1, 'rgba(220, 235, 240, 0.2)');
       
       ctx.fillStyle = gradient;
-      ctx.fillRect(
-        -centerOffset.x / zoomLevel, 
-        -centerOffset.y / zoomLevel, 
-        canvasWidth, canvasHeight
-      );
-      
-      // 画星星点缀
-      const now = Date.now();
-      const starCount = Math.min(150, Math.max(80, Math.floor(canvasWidth * canvasHeight / 10000)));
-      
-      for (let i = 0; i < starCount; i++) {
-        // 使用伪随机函数以确保星星位置稳定
-        const pseudoRandom = (i * 9301 + 49297) % 233280;
-        const random = pseudoRandom / 233280;
-        
-        const x = canvasWidth * (i % 17) / 17 - centerOffset.x / zoomLevel;
-        const y = canvasHeight * Math.floor(i / 17) / Math.ceil(starCount / 17) - centerOffset.y / zoomLevel;
-        
-        const offsetX = Math.sin((now + i * 100) / 3000) * 10;
-        const offsetY = Math.cos((now + i * 100) / 5000) * 10;
-        
-        const finalX = x + offsetX;
-        const finalY = y + offsetY;
-        
-        // 不同大小和透明度的星星
-        const size = 0.5 + random * 1;
-        const alpha = 0.2 + random * 0.8;
-        
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.3})`;
-        ctx.beginPath();
-        ctx.arc(finalX, finalY, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      
+      ctx.fillRect(-centerOffset.x / zoomLevel, -centerOffset.y / zoomLevel, 
+                   canvas.width / (dpr * zoomLevel), canvas.height / (dpr * zoomLevel));
       ctx.restore();
     }
 
@@ -1205,24 +1168,24 @@ const NetworkGraph = ({
           const groupInfo = getGroupSummary(groupId);
           
           tooltipNode = (
-            <div className="p-2 rounded-[12px] bg-card/90 backdrop-blur-md shadow-lg border border-border text-sm">
-              <div className="font-bold text-primary">{groupInfo.name}</div>
-              <div className="text-secondary">成员: {groupInfo.memberCount}</div>
-              <div className="text-secondary">平衡: {groupInfo.totalCoins > 0 ? '+' : ''}{groupInfo.totalCoins}</div>
+            <div className="p-2 rounded-lg bg-white/90 backdrop-blur-md shadow-lg border border-gray-100 text-sm">
+              <div className="font-bold">{groupInfo.name}</div>
+              <div>Members: {groupInfo.memberCount}</div>
+              <div>Balance: {groupInfo.totalCoins > 0 ? '+' : ''}{groupInfo.totalCoins}</div>
               {groupInfo.lastInteraction && (
-                <div className="text-secondary">最后互动: {new Date(groupInfo.lastInteraction).toLocaleDateString()}</div>
+                <div>Last interaction: {new Date(groupInfo.lastInteraction).toLocaleDateString()}</div>
               )}
             </div>
           );
         } else {
           // Individual node tooltip
           tooltipNode = (
-            <div className="p-2 rounded-[12px] bg-card/90 backdrop-blur-md shadow-lg border border-border text-sm">
-              <div className="font-bold text-primary">{node.name}</div>
-              <div className="text-secondary">类型: {node.type}</div>
-              <div className="text-secondary">平衡: {node.coins > 0 ? '+' : ''}{node.coins}</div>
+            <div className="p-2 rounded-lg bg-white/90 backdrop-blur-md shadow-lg border border-gray-100 text-sm">
+              <div className="font-bold">{node.name}</div>
+              <div>Type: {node.type}</div>
+              <div>Balance: {node.coins > 0 ? '+' : ''}{node.coins}</div>
               {node.lastInteraction && (
-                <div className="text-secondary">最后互动: {new Date(node.lastInteraction).toLocaleDateString()}</div>
+                <div>Last interaction: {new Date(node.lastInteraction).toLocaleDateString()}</div>
               )}
             </div>
           );
@@ -1258,30 +1221,24 @@ const NetworkGraph = ({
     
     // Check for connection hover if not hovering over a node
     const connection = findConnectionAt(x, y);
-          if (connection) {
-        setHoveredConnection(connection);
-        canvasRef.current!.style.cursor = 'pointer';
-        
-        // Show connection tooltip in detailed view
+    if (connection) {
+      setHoveredConnection(connection);
+      canvasRef.current!.style.cursor = 'pointer';
+      
+      // Show connection tooltip in detailed view
       if (levelOfDetail === 'detailed' || viewLevel === 'contact') {
         const tooltipNode = (
-          <div className="p-2 rounded-[12px] bg-card/90 backdrop-blur-md shadow-lg border border-border text-sm">
-            <div className="font-bold text-primary">连接</div>
-            <div className="text-secondary">从: {connection.fromNode.name}</div>
-            <div className="text-secondary">到: {connection.toNode.name}</div>
-            <div className="text-secondary">强度: {Math.round(connection.strength * 10)}</div>
-            <div className="text-secondary">平衡: {
-              connection.balance === 'positive' ? '正向' : 
-              connection.balance === 'negative' ? '负向' : '中性'
-            }</div>
+          <div className="p-2 rounded-lg bg-white/90 backdrop-blur-md shadow-lg border border-gray-100 text-sm">
+            <div className="font-bold">Connection</div>
+            <div>From: {connection.fromNode.name}</div>
+            <div>To: {connection.toNode.name}</div>
+            <div>Strength: {Math.round(connection.strength * 10)}</div>
+            <div>Balance: {connection.balance}</div>
             {connection.interactions && (
-              <div className="text-secondary">交互: {connection.interactions}</div>
+              <div>Interactions: {connection.interactions}</div>
             )}
             {connection.trend && (
-              <div className="text-secondary">趋势: {
-                connection.trend === 'increasing' ? '增长' : 
-                connection.trend === 'decreasing' ? '下降' : '稳定'
-              }</div>
+              <div>Trend: {connection.trend}</div>
             )}
           </div>
         );
@@ -1517,52 +1474,52 @@ const NetworkGraph = ({
           <Button
             variant="outline"
             size="icon"
-            className="bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"
+            className="bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"
             onClick={handleBack}
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 text-gray-700" />
           </Button>
 
           {/* Breadcrumb navigation */}
-          <div className="flex items-center h-9 px-3 rounded-[12px] bg-card/90 backdrop-blur-md shadow-sm border border-border">
+          <div className="flex items-center h-9 px-3 rounded-md bg-white/80 backdrop-blur-sm shadow-sm border border-gray-200">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={`breadcrumb-${viewLevel}`}
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="flex items-center text-sm font-medium text-secondary"
+                className="flex items-center text-sm font-medium text-gray-700"
               >
                 <span 
-                  className="cursor-pointer hover:text-primary"
+                  className="cursor-pointer hover:text-blue-600"
                   onClick={() => navigateTo('overview')}
                 >
-                  网络
+                  Network
                 </span>
                 
                 {viewLevel === 'group' && currentGroup && (
                   <>
-                    <ChevronLeft className="h-3 w-3 mx-1 text-muted" />
-                    <span className="text-primary">
-                      {groups.find(g => g.id === currentGroup)?.name || '群组'}
+                    <ChevronLeft className="h-3 w-3 mx-1 text-gray-500" />
+                    <span className="text-blue-600">
+                      {groups.find(g => g.id === currentGroup)?.name || 'Group'}
                     </span>
                   </>
                 )}
                 
                 {viewLevel === 'contact' && currentContact && (
                   <>
-                    <ChevronLeft className="h-3 w-3 mx-1 text-muted" />
+                    <ChevronLeft className="h-3 w-3 mx-1 text-gray-500" />
                     {currentGroup && (
                       <span 
-                        className="cursor-pointer hover:text-primary mr-1"
+                        className="cursor-pointer hover:text-blue-600 mr-1"
                         onClick={() => navigateTo('group', currentGroup)}
                       >
-                        {groups.find(g => g.id === currentGroup)?.name || '群组'}
+                        {groups.find(g => g.id === currentGroup)?.name || 'Group'}
                       </span>
                     )}
-                    <ChevronLeft className="h-3 w-3 mx-1 text-muted" />
-                    <span className="text-primary">
-                      {nodes.find(n => n.id === currentContact)?.name || '联系人'}
+                    <ChevronLeft className="h-3 w-3 mx-1 text-gray-500" />
+                    <span className="text-blue-600">
+                      {nodes.find(n => n.id === currentContact)?.name || 'Contact'}
                     </span>
                   </>
                 )}
@@ -1575,18 +1532,18 @@ const NetworkGraph = ({
           <Button
             variant="outline"
             size="icon"
-            className="bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"
+            className="bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"
             onClick={handleShare}
           >
-            <Share2 className="h-4 w-4" />
+            <Share2 className="h-4 w-4 text-gray-700" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"
+            className="bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"
             onClick={() => {}}
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-4 w-4 text-gray-700" />
           </Button>
         </div>
       )}
@@ -1597,26 +1554,26 @@ const NetworkGraph = ({
           <Button
             variant="outline"
             size="icon"
-            className="bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"
+            className="bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"
             onClick={zoomIn}
           >
-            <ZoomIn className="h-4 w-4" />
+            <ZoomIn className="h-4 w-4 text-gray-700" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"
+            className="bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"
             onClick={zoomOut}
           >
-            <ZoomOut className="h-4 w-4" />
+            <ZoomOut className="h-4 w-4 text-gray-700" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"
+            className="bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"
             onClick={resetView}
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-4 w-4 text-gray-700" />
           </Button>
           
           {/* Toggle data panel button */}
@@ -1624,8 +1581,8 @@ const NetworkGraph = ({
             variant={showDataPanel ? "default" : "outline"}
             size="icon"
             className={`${showDataPanel 
-              ? "bg-primary text-primary-foreground shadow-md" 
-              : "bg-card/90 backdrop-blur-md shadow-sm border-border hover:bg-card/100 text-foreground"}`}
+              ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md" 
+              : "bg-white/80 backdrop-blur-sm shadow-sm border-gray-200 hover:bg-white"}`}
             onClick={toggleDataPanel}
           >
             <Activity className="h-4 w-4" />
@@ -1640,11 +1597,11 @@ const NetworkGraph = ({
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="absolute top-20 right-6 z-10 w-72 bg-card/95 backdrop-blur-md rounded-[12px] shadow-lg border border-border overflow-hidden"
+            className="absolute top-20 right-6 z-10 w-72 bg-white/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-100 overflow-hidden"
           >
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <h3 className="font-semibold text-primary">{dataPanelContent.title}</h3>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-secondary hover:text-primary" onClick={() => setShowDataPanel(false)}>
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="font-semibold text-gray-900">{dataPanelContent.title}</h3>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setShowDataPanel(false)}>
                 <span className="sr-only">关闭</span>
                 <span aria-hidden="true">×</span>
               </Button>
@@ -1652,30 +1609,30 @@ const NetworkGraph = ({
             
             <div className="p-4">
               {viewLevel === 'overview' && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-accent/50 p-3 rounded-[12px]">
-                      <div className="text-xs text-secondary">联系人</div>
-                      <div className="text-xl font-semibold text-primary">{dataPanelContent.data.totalContacts}</div>
+                    <div className="bg-blue-50 p-3 rounded-md">
+                      <div className="text-xs text-gray-500">联系人</div>
+                      <div className="text-xl font-semibold">{dataPanelContent.data.totalContacts}</div>
                     </div>
-                    <div className="bg-accent/50 p-3 rounded-[12px]">
-                      <div className="text-xs text-secondary">互动总数</div>
-                      <div className="text-xl font-semibold text-primary">{dataPanelContent.data.totalInteractions}</div>
+                    <div className="bg-green-50 p-3 rounded-md">
+                      <div className="text-xs text-gray-500">互动总数</div>
+                      <div className="text-xl font-semibold">{dataPanelContent.data.totalInteractions}</div>
                     </div>
                   </div>
                   
-                  <div className="bg-accent/30 rounded-[12px] p-3">
-                    <div className="text-xs text-secondary mb-1">人际平衡</div>
-                    <div className="h-4 bg-accent/50 rounded-full overflow-hidden">
+                  <div className="bg-gray-50 rounded-md p-3">
+                    <div className="text-xs text-gray-500 mb-1">人际平衡</div>
+                    <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-nodePositive" 
+                        className="h-full bg-green-500" 
                         style={{ 
                           width: `${(dataPanelContent.data.positiveBalance / 
                             (dataPanelContent.data.positiveBalance + dataPanelContent.data.negativeBalance)) * 100}%`
                         }} 
                       />
                     </div>
-                    <div className="flex justify-between mt-1 text-xs text-secondary">
+                    <div className="flex justify-between mt-1 text-xs">
                       <span>正向: {dataPanelContent.data.positiveBalance}</span>
                       <span>负向: {dataPanelContent.data.negativeBalance}</span>
                     </div>
@@ -1684,28 +1641,28 @@ const NetworkGraph = ({
               )}
               
               {viewLevel === 'group' && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-accent/50 p-3 rounded-[12px]">
-                      <div className="text-xs text-secondary">成员数</div>
-                      <div className="text-xl font-semibold text-primary">{dataPanelContent.data.memberCount}</div>
+                    <div className="bg-blue-50 p-3 rounded-md">
+                      <div className="text-xs text-gray-500">成员数</div>
+                      <div className="text-xl font-semibold">{dataPanelContent.data.memberCount}</div>
                     </div>
-                    <div className="bg-accent/50 p-3 rounded-[12px]">
-                      <div className="text-xs text-secondary">总互动</div>
-                      <div className="text-xl font-semibold text-primary">{dataPanelContent.data.totalInteractions}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-accent/30 rounded-[12px] p-3">
-                    <div className="text-xs text-secondary mb-1">互动频率</div>
-                    <div className="text-lg font-semibold text-primary">
-                      {dataPanelContent.data.averageInteractionFrequency.toFixed(1)} <span className="text-xs font-normal text-secondary">每人均值</span>
+                    <div className="bg-green-50 p-3 rounded-md">
+                      <div className="text-xs text-gray-500">总互动</div>
+                      <div className="text-xl font-semibold">{dataPanelContent.data.totalInteractions}</div>
                     </div>
                   </div>
                   
-                  <div className="bg-accent/30 rounded-[12px] p-3">
-                    <div className="text-xs text-secondary mb-1">最后互动</div>
-                    <div className="text-sm text-primary">
+                  <div className="bg-gray-50 rounded-md p-3">
+                    <div className="text-xs text-gray-500 mb-1">互动频率</div>
+                    <div className="text-lg font-semibold">
+                      {dataPanelContent.data.averageInteractionFrequency.toFixed(1)} <span className="text-xs font-normal">每人均值</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-md p-3">
+                    <div className="text-xs text-gray-500 mb-1">最后互动</div>
+                    <div className="text-sm">
                       {dataPanelContent.data.lastInteraction ? new Date(dataPanelContent.data.lastInteraction).toLocaleDateString() : '无数据'}
                     </div>
                   </div>
@@ -1713,12 +1670,12 @@ const NetworkGraph = ({
               )}
               
               {viewLevel === 'contact' && (
-                <div className="space-y-6">
-                  <div className="bg-accent/30 p-3 rounded-[12px]">
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-3 rounded-md">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-xs text-secondary">类型</div>
-                        <div className="font-medium text-primary">
+                        <div className="text-xs text-gray-500">类型</div>
+                        <div className="font-medium">
                           {(() => {
                             switch(dataPanelContent.data.contact.type) {
                               case 'friend': return '朋友';
@@ -1732,9 +1689,9 @@ const NetworkGraph = ({
                       </div>
                       
                       <Badge className={
-                        dataPanelContent.data.contact.coins > 0 ? "bg-nodePositive/20 text-nodePositive border-nodePositive/30" :
-                        dataPanelContent.data.contact.coins < 0 ? "bg-nodeNegative/20 text-nodeNegative border-nodeNegative/30" :
-                        "bg-nodeNeutral/20 text-nodeNeutral border-nodeNeutral/30"
+                        dataPanelContent.data.contact.coins > 0 ? "bg-green-100 text-green-800 hover:bg-green-100" :
+                        dataPanelContent.data.contact.coins < 0 ? "bg-red-100 text-red-800 hover:bg-red-100" :
+                        "bg-gray-100 text-gray-800 hover:bg-gray-100"
                       }>
                         {dataPanelContent.data.contact.coins > 0 ? '+' : ''}{dataPanelContent.data.contact.coins} 币
                       </Badge>
@@ -1742,24 +1699,24 @@ const NetworkGraph = ({
                   </div>
                   
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-accent/50 p-3 rounded-[12px]">
-                      <div className="text-xs text-secondary">连接数</div>
-                      <div className="text-xl font-semibold text-primary">{dataPanelContent.data.connectionCount}</div>
+                    <div className="bg-blue-50 p-3 rounded-md">
+                      <div className="text-xs text-gray-500">连接数</div>
+                      <div className="text-xl font-semibold">{dataPanelContent.data.connectionCount}</div>
                     </div>
-                    <div className="bg-accent/50 p-3 rounded-[12px]">
-                      <div className="text-xs text-secondary">互动总数</div>
-                      <div className="text-xl font-semibold text-primary">{dataPanelContent.data.totalInteractions}</div>
+                    <div className="bg-green-50 p-3 rounded-md">
+                      <div className="text-xs text-gray-500">互动总数</div>
+                      <div className="text-xl font-semibold">{dataPanelContent.data.totalInteractions}</div>
                     </div>
                   </div>
                   
                   {dataPanelContent.data.contacts.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-medium mb-2 text-secondary">关联联系人</h4>
-                      <div className="max-h-32 overflow-y-auto bg-accent/20 rounded-[12px] divide-y divide-border">
+                      <h4 className="text-sm font-medium mb-2">关联联系人</h4>
+                      <div className="max-h-32 overflow-y-auto">
                         {dataPanelContent.data.contacts.map((contact: any, i: number) => (
-                          <div key={i} className="flex items-center justify-between p-2 hover:bg-accent/30 text-sm">
-                            <span className="text-primary">{contact.name}</span>
-                            <Badge variant="secondary" className="text-xs bg-accent/50 text-secondary">
+                          <div key={i} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded text-sm">
+                            <span>{contact.name}</span>
+                            <Badge variant="secondary" className="text-xs">
                               {contact.balance}
                             </Badge>
                           </div>
@@ -1803,7 +1760,7 @@ const NetworkGraph = ({
       <AnimatePresence>
         {selectedNode && !selectedNode.id.startsWith('group_') && selectedNode.id !== 'you' && (
           <motion.div 
-            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 bg-card/90 backdrop-blur-md rounded-full shadow-lg p-1 flex space-x-1"
+            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 bg-white/95 backdrop-blur-md rounded-full shadow-lg p-1 flex space-x-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
@@ -1811,7 +1768,7 @@ const NetworkGraph = ({
             <Button
               variant="ghost"
               size="sm" 
-              className="flex items-center rounded-full px-3 text-secondary hover:text-primary"
+              className="flex items-center rounded-full px-3"
               onClick={() => {
                 onContactSelect(selectedNode);
                 toast("Navigate to contact details", { icon: "👤" });
@@ -1824,7 +1781,7 @@ const NetworkGraph = ({
             <Button
               variant="ghost"
               size="sm" 
-              className="flex items-center rounded-full px-3 text-secondary hover:text-primary"
+              className="flex items-center rounded-full px-3"
               onClick={() => {
                 toast("Added interaction with contact", { icon: "✏️" });
               }}
